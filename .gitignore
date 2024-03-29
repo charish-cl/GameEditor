@@ -1,0 +1,15 @@
+# 忽略Unity生成的Library和Temp文件夹
+Library/
+Temp/
+
+# 忽略Visual Studio生成的文件和文件夹
+*.sln
+*.csproj
+*.suo
+*.user
+
+# 忽略其他不需要提交的文件和文件夹
+Logs/
+obj/
+bin/
+*.pidb
