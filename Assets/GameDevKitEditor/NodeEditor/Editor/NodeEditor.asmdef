@@ -1,0 +1,16 @@
+{
+    "name": "NodeEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:d6b8175ba5108aa43b2ed5a2422b667c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

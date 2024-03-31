@@ -1,0 +1,16 @@
+using UnityEngine.UI;
+using UnityEngine;
+namespace #Namaspace
+{
+    public class #ClassName:MonoBehaviour
+    {   
+        #Propery
+         private void Start()
+        {
+         #Init
+                    
+         }
+        #BindMethod
+    }
+  
+}

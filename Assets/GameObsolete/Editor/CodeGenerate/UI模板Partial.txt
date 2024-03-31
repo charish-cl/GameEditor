@@ -1,0 +1,18 @@
+﻿//在公司看到的把UI分成两部分，用partial关键字,这样重新生成的时候，不会覆盖掉我们自己写的代码
+//2023/12/28
+using UnityEngine.UI;
+using UnityEngine;
+namespace #Namaspace
+{
+    public partial class #ClassName:MonoBehaviour
+    {   
+        #Propery
+         private void Start()
+        {
+         #Init
+                    
+         }
+        #BindMethod
+    }
+  
+}
