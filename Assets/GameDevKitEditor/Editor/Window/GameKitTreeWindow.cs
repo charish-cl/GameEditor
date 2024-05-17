@@ -41,7 +41,6 @@ namespace GameDevKitEditor
             Debug.Log($"{ tree.Config}  { tree.Selection }");
         
             Debug.Log(typeof(FileWindow).IsSubclassOf(typeof(OdinEditorWindow)));
-            Debug.Log(typeof(SaveValueWindow<>));
         }
    
         protected override OdinMenuTree BuildMenuTree()
@@ -62,7 +61,7 @@ namespace GameDevKitEditor
             
             //把继承了OdinWindow的添加到树里
             var windows = GetType().Assembly.GetTypes()
-                .Where(e=>e.IsSubclassOf(typeof(OdinEditorWindow)) || e!= typeof(SaveValueWindow<>))
+                .Where(e=>e.IsSubclassOf(typeof(OdinEditorWindow)) )
                 .Where(e=>e.GetCustomAttribute<TreeWindowAttribute>()!=null)
                 .Select(e => new {e.GetCustomAttribute<TreeWindowAttribute>().Path,e})
                 .ToList();
