@@ -319,7 +319,12 @@ namespace GameDevKitEditor
             {
                 objTxt = objTxt.Replace(oldGuid, newGuid);
                 File.WriteAllText(assetPath, objTxt);
+
+                var metaPath = AssetDatabase.GetAssetPath(destObj) + ".meta";
+                Debug.Log(metaPath);
+                AssetDatabase.DeleteAsset(metaPath);
             }
+            
         }
 
         /// <summary>
@@ -479,6 +484,7 @@ namespace GameDevKitEditor
                 foreach (var s in sprites)
                 {
                     ReplaceResource(s, sprites[0]);
+              
                 }
 
                 //删除只保留第一个
