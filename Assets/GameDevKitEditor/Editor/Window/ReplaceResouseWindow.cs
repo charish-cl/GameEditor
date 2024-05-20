@@ -320,9 +320,9 @@ namespace GameDevKitEditor
                 objTxt = objTxt.Replace(oldGuid, newGuid);
                 File.WriteAllText(assetPath, objTxt);
 
-                var metaPath = AssetDatabase.GetAssetPath(destObj) + ".meta";
-                Debug.Log(metaPath);
-                AssetDatabase.DeleteAsset(metaPath);
+                // var metaPath = AssetDatabase.GetAssetPath(destObj) + ".meta";
+                // Debug.Log(metaPath);
+                // AssetDatabase.DeleteAsset(metaPath);
             }
             
         }
@@ -362,15 +362,12 @@ namespace GameDevKitEditor
                 return false;
             }
 
-            string oldGuid = sourceObj is Texture2D ||
-                             sourceObj is Sprite
-                ? GetTexture2DAndSprideStr(sourceObj)
-                : AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(sourceObj));
-
-            string newGuid = targetObj is Texture2D ||
-                             targetObj is Sprite
-                ? GetTexture2DAndSprideStr(targetObj)
-                : AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(targetObj));
+            // string oldGuid = sourceObj is Texture2D ||
+            //                  sourceObj is Sprite
+            //     ? GetTexture2DAndSprideStr(sourceObj)
+            //     : AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(sourceObj));
+            string oldGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(sourceObj));
+            string newGuid = AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(targetObj));
 
             EditorApplication.update = delegate()
             {

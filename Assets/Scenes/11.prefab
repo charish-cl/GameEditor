@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 53bb98dfa2de502458f582980a5069c2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1925c1c061def834186f7d9608a067ac, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 7373829239594117453}
   - component: {fileID: 9219006687042714784}
   m_Layer: 5
-  m_Name: Panel 2
+  m_Name: 11
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -160,6 +160,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 251641991794521049}
     m_Modifications:
+    - target: {fileID: 188267175329162842, guid: 4035617f7db53ef4eae2c06494e376c2, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1925c1c061def834186f7d9608a067ac, type: 3}
     - target: {fileID: 3913403977877838725, guid: 4035617f7db53ef4eae2c06494e376c2, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
