@@ -820,7 +820,7 @@ PlayerSettings:
     PS5: TextMeshPro
     QNX: TextMeshPro
     Stadia: TextMeshPro
-    Standalone: ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;TextMeshPro
+    Standalone: ODIN_INSPECTOR;ODIN_INSPECTOR_3;ODIN_INSPECTOR_3_1;TextMeshPro;UNITASK_DOTWEEN_SUPPORT
     VisionOS: TextMeshPro
     WebGL: TextMeshPro
     XboxOne: TextMeshPro

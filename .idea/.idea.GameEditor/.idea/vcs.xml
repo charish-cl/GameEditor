@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/Assets/UGUI-Editor" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Assets/YIUI" vcs="Git" />
   </component>
 </project>

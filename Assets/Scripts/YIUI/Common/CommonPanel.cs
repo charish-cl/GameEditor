@@ -11,9 +11,8 @@ namespace YIUI.Common
     /// Author  YIUI
     /// Date    2024.5.28
     /// </summary>
-    public sealed partial class CommonPanel:CommonPanelBase
+    public sealed partial class CommonPanel:CommonPanelBase,IYIUIOpen<int,bool>
     {
-    
         #region 生命周期
         
         protected override void Initialize()
@@ -61,9 +60,19 @@ namespace YIUI.Common
        
         protected override void OnEventCloseEventAction()
         {
-            Close();
+            // Close();
+            this.OpenView<MainView>();
+            
+           // this.DataTable.FindDataValue<int>("");
         }
         #endregion Event结束
 
+
+        public UniTask<bool> OnOpen(int p1, bool p2)
+        {
+
+
+            return new UniTask<bool>(true);
+        }
     }
 }

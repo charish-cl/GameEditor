@@ -16,7 +16,7 @@ namespace DefaultNamespace
            YIUILoadDI.LoadAssetAsyncFunc = LoadAssetAsyFunc;
            SingletonMgr.Initialize();
            await PanelMgr.Inst.ManagerAsyncInit();
-           PanelMgr.Inst.OpenPanel<CommonPanel>();
+           PanelMgr.Inst.OpenPanel<CommonPanel,int,bool>(1,true);
         }
 
         private async UniTask<(Object, int)> LoadAssetAsyFunc(string arg1, string arg2, Type arg3)
