@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "99187398059",
+    "project_id": "test-7e534",
+    "storage_bucket": "test-7e534.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99187398059:android:80399f4dec83ceac86aeee",
+        "android_client_info": {
+          "package_name": "com.nightq.MonopolyRush"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1YC615Dy3VkkKa7xkV1wMqGqb0Ad2cOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      },
+      "admob_app_id": "ca-app-pub-5280952905558013~4244229625"
+    }
+  ],
+  "configuration_version": "1"
+}
