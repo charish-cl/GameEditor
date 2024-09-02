@@ -13,6 +13,12 @@
             UIWindow = uiWindow;
             UIWindowProp = uiWindowProp;
         }
+
+        public UIWindowRecord(IUIWindow uiWindow) : this()
+        {
+            UIWindow = uiWindow;
+        }
+
         public void Show() {
             UIWindow.Show(UIWindowProp);
         }

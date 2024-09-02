@@ -7,12 +7,12 @@
 
     public interface IUIPanelProp : IUIBaseProp
     {
-        PanelPriority Priority { get; set; }
+        PanelLayer Priority { get; set; }
     }
     
     public interface IUIWindowProp : IUIBaseProp
     {
-        WindowPriority WindowQueuePriority { get; set; }
+        WindowLayer WindowQueueLayer { get; set; }
         bool HideOnForegroundLost { get; set; }
         bool IsPopup { get; set; }
         bool SuppressPrefabProperties { get; set; }

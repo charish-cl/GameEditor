@@ -4,8 +4,9 @@ using UnityEngine;
 namespace TEngine
 {
     public abstract class UILayer<TUIBase> : MonoBehaviour where TUIBase : IUIBaseControl {
+        
         protected Dictionary<string, TUIBase> registeredScreens;
-          /// <summary>
+        /// <summary>
         /// 显示界面
         /// </summary>
         /// <param name="screen">界面类型参数</param>
@@ -37,7 +38,7 @@ namespace TEngine
         /// </summary>
         /// <param name="controller">界面的controller</param>
         /// <param name="screenTransform">界面节点</param>
-        public virtual void ReparenTUIBase(IUIBaseControl controller, Transform screenTransform) {
+        public virtual void ReparenUIBase(IUIBaseControl controller, Transform screenTransform) {
             screenTransform.SetParent(transform, false);
         }
 
@@ -48,7 +49,7 @@ namespace TEngine
         /// <param name="controller">界面controller</param>
         public void RegisterScreen(string screenId, TUIBase controller) {
             if (!registeredScreens.ContainsKey(screenId)) {
-                AddUI(screenId, controller);
+                RegisterUI(screenId, controller);
             }
             else {
                 Debug.LogError("[AUILayerController] Screen controller already registered for id: " + screenId);
@@ -62,7 +63,7 @@ namespace TEngine
         /// <param name="controller">被取消的界面controller</param>
         public void UnregisterScreen(string screenId, TUIBase controller) {
             if (registeredScreens.ContainsKey(screenId)) {
-                RemoveUI(screenId, controller);
+                UnRegisterUI(screenId, controller);
             }
             else {
                 Debug.LogError("[AUILayerController] Screen controller not registered for id: " + screenId);
@@ -131,13 +132,13 @@ namespace TEngine
             }
         }
         //TODO: 这里可以配合预加载,游戏初始化的时候预加载指定页面
-        protected virtual void AddUI(string screenId, TUIBase controller) {
+        protected virtual void RegisterUI(string screenId, TUIBase controller) {
             controller.ScreenId = screenId;
             registeredScreens.Add(screenId, controller);
             controller.ScreenDestroyed += OnScreenDestroyed;
         }
 
-        protected virtual void RemoveUI(string screenId, TUIBase controller) {
+        protected virtual void UnRegisterUI(string screenId, TUIBase controller) {
             controller.ScreenDestroyed -= OnScreenDestroyed;
             registeredScreens.Remove(screenId);
         }

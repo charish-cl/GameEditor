@@ -1,15 +1,36 @@
-﻿namespace TEngine
+﻿using TEngine.UIPanel;
+using TEngine.UIWindow;
+
+namespace TEngine
 {
     public sealed class UIModule: Module
     {
         public  IUIHelper UIHelper { get; set; }
-        
         public IResourceManager ResourceManager { get; set; }
+        
+        public UIPanelLayer UIPanelLayer { get; set; }
+        public UIWindowLayer UIWindowLayer { get; set; }
+        
         
         protected override void Awake()
         {
             base.Awake();
             ResourceManager = ModuleImpSystem.GetModule<IResourceManager>();
+        }
+
+        public void OpenWindow<T>(string windowId,IUIWindowProp uiWindowProp)
+        {
+            UIWindowLayer.ShowWindowById(windowId,uiWindowProp);
+        }
+
+        public void RegisterUI(string screenId, IUIBaseControl uiBaseControl)
+        {
+            var window = uiBaseControl as IUIWindow;
+            if (window!= null)
+            {
+                UIWindowLayer.RegisterScreen(screenId, window);
+            }
+         
         }
     }
 
