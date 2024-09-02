@@ -1,6 +1,4 @@
-﻿using Sirenix.OdinInspector.Editor;
-using UnityEngine;
-
+﻿
 namespace GameDevKit
 {
     [System.AttributeUsage(System.AttributeTargets.Class)]

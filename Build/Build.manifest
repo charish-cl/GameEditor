@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 3079908828
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: assets/game/uiform/image 1.prefab
+      Dependencies: {}
+    Info_1:
+      Name: assets/game/uiform/image 2.prefab
+      Dependencies: {}
+    Info_2:
+      Name: assets/game/uiform/image 3.prefab
+      Dependencies: {}
+    Info_3:
+      Name: assets/game/uiform/image.prefab
+      Dependencies: {}

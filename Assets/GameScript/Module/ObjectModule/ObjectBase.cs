@@ -2,7 +2,7 @@
 
 namespace TEngine
 {
-    public class ObjectBase
+    public abstract class ObjectBase
     {
         private string name;
 
@@ -11,20 +11,55 @@ namespace TEngine
         /// <summary>
         /// 是否锁定
         /// </summary>
-        private bool Lock;
+        private bool _Lock;
 
 
-        private object Target;
+        private object target;
         
         
-        public DateTime LastTime;
-        
+        private DateTime lastUseTime;
+
+        public string Name
+        {
+            get => name;
+            set => name = value;
+        }
+
+        public int Priority
+        {
+            get => priority;
+            set => priority = value;
+        }
+
+        public bool Lock
+        {
+            get => _Lock;
+            set => _Lock = value;
+        }
+
+        public object Target
+        {
+            get => target;
+            set => target = value;
+        }
+
+        public DateTime LastUseTime
+        {
+            get => lastUseTime;
+            set => lastUseTime = value;
+        }
+
         /// <summary>
         /// 是否可以释放
         /// </summary>
         public virtual bool CanReleaseFlag => true;
-        
-        
-        
+
+        /// 生成，回收，释放
+        public virtual void OnSpawn(){}
+        public virtual void OnUnSpawn(){}
+        public abstract void OnRelease();
+
+
+
     }
 }

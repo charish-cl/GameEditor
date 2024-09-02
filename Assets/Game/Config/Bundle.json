@@ -1,0 +1,28 @@
+{
+  "mABList": [
+    {
+      "ABName": "Assets/Game/UIForm\\Image 1.prefab",
+      "AssetList": [
+        "Assets/Game/UIForm\\Image 1.prefab"
+      ]
+    },
+    {
+      "ABName": "Assets/Game/UIForm\\Image 2.prefab",
+      "AssetList": [
+        "Assets/Game/UIForm\\Image 2.prefab"
+      ]
+    },
+    {
+      "ABName": "Assets/Game/UIForm\\Image 3.prefab",
+      "AssetList": [
+        "Assets/Game/UIForm\\Image 3.prefab"
+      ]
+    },
+    {
+      "ABName": "Assets/Game/UIForm\\Image.prefab",
+      "AssetList": [
+        "Assets/Game/UIForm\\Image.prefab"
+      ]
+    }
+  ]
+}

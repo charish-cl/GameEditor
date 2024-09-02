@@ -1,0 +1,24 @@
+{
+  "mResList": [
+    {
+      "ResName": "Assets/Game/UIForm\\Image 1.prefab",
+      "ABName": "Assets/Game/UIForm\\Image 1.prefab",
+      "DependABList": []
+    },
+    {
+      "ResName": "Assets/Game/UIForm\\Image 2.prefab",
+      "ABName": "Assets/Game/UIForm\\Image 2.prefab",
+      "DependABList": []
+    },
+    {
+      "ResName": "Assets/Game/UIForm\\Image 3.prefab",
+      "ABName": "Assets/Game/UIForm\\Image 3.prefab",
+      "DependABList": []
+    },
+    {
+      "ResName": "Assets/Game/UIForm\\Image.prefab",
+      "ABName": "Assets/Game/UIForm\\Image.prefab",
+      "DependABList": []
+    }
+  ]
+}

@@ -54,20 +54,20 @@ namespace TEngine
         //
         // private static ProcedureModule _procedure;
         //
-        // /// <summary>
-        // /// 获取对象池模块。
-        // /// </summary>
-        // public static ObjectPoolModule ObjectPool => _objectPool ??= Get<ObjectPoolModule>();
-        //
-        // private static ObjectPoolModule _objectPool;
-        //
-        // /// <summary>
-        // /// 获取资源模块。
-        // /// </summary>
-        // public static ResourceModule Resource => _resource ??= Get<ResourceModule>();
-        //
-        // private static ResourceModule _resource;
-        //
+        /// <summary>
+        /// 获取对象池模块。
+        /// </summary>
+        public static ObjectPoolModule ObjectPool => _objectPool ??= Get<ObjectPoolModule>();
+        
+        private static ObjectPoolModule _objectPool;
+        
+        /// <summary>
+        /// 获取资源模块。
+        /// </summary>
+        public static ResourceModule Resource => _resource ??= Get<ResourceModule>();
+        
+        private static ResourceModule _resource;
+        
         // /// <summary>
         // /// 获取音频模块。
         // /// </summary>
@@ -163,8 +163,8 @@ namespace TEngine
             // _debugger = null;
             // _fsm = null;
             // _procedure = null;
-            // _objectPool = null;
-            // _resource = null;
+            _objectPool = null;
+            _resource = null;
             // _audio = null;
             // _setting = null;
             _ui = null;

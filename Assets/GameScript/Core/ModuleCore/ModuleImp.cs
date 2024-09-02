@@ -15,7 +15,7 @@ namespace TEngine
     /// 游戏框架模块抽象类。
     /// <remarks>实现游戏框架具体逻辑。</remarks>
     /// </summary>
-    internal abstract class ModuleImp
+    public abstract class ModuleImp
     {
         /// <summary>
         /// 获取游戏框架模块优先级。
