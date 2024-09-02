@@ -6,7 +6,7 @@
 //------------------------------------------------------------
 
 using System;
-
+//Object相比ObjectBase多了引用计数
 namespace TEngine
 {
     

@@ -5,7 +5,7 @@ namespace TEngine
 {
     //这两个保存到配置里的类
     [Serializable]
-    public class DefineData
+    public class BuildDataDefine
     {
         public string ABName;
         public List<string> AssetList;
@@ -23,11 +23,13 @@ namespace TEngine
 
         public List<string> DependABList;
     }
-
+//TODO: 这里的ABItemLis和ResItemLis是用来保存到配置里的，可以有更好的方法的暂时这样吧
+//主要JsonUtility.SerializeObject(ABItemLis)和JsonUtility.SerializeObject(ResItemLis)
+//这两个方法可以将类序列化为json字符串，然后保存到配置文件里。
     [Serializable]
     public class ABItemLis
     {
-        public List<DefineData> mABList = new List<DefineData>();
+        public List<BuildDataDefine> mABList = new List<BuildDataDefine>();
     }
 
     [Serializable]

@@ -23,7 +23,7 @@ namespace TEngine
 
 
 
-        public Dictionary<string,DefineData> bundleDic = new Dictionary<string,DefineData>();
+        public Dictionary<string,BuildDataDefine> bundleDic = new Dictionary<string,BuildDataDefine>();
 
 
         public Dictionary<string, ResItem> resItemDic = new Dictionary<string, ResItem>();
@@ -72,7 +72,7 @@ namespace TEngine
 
         private void LoadDepence()
         {
-            foreach (KeyValuePair<string,DefineData> keyValuePair in bundleDic)
+            foreach (KeyValuePair<string,BuildDataDefine> keyValuePair in bundleDic)
             {
                 var abItem = keyValuePair.Value;
 
@@ -96,7 +96,7 @@ namespace TEngine
         {
             List<AssetBundleBuild> assetBundleBuilds=new List<AssetBundleBuild>();
             
-            foreach (KeyValuePair<string,DefineData> keyValuePair in bundleDic)
+            foreach (KeyValuePair<string,BuildDataDefine> keyValuePair in bundleDic)
             {
                 assetBundleBuilds.Add(new AssetBundleBuild()
                 {
@@ -155,7 +155,7 @@ namespace TEngine
                     //一个文件一个ab
                     foreach (var filePath in filePaths)
                     {
-                        bundleDic.Add(filePath, new DefineData()
+                        bundleDic.Add(filePath, new BuildDataDefine()
                         {
                             ABName = filePath,
                             //把自己添加进去
@@ -174,7 +174,7 @@ namespace TEngine
                         {
                             continue;
                         }
-                        bundleDic.Add(folder, new DefineData()
+                        bundleDic.Add(folder, new BuildDataDefine()
                         {
                             ABName = folder,
                             AssetList = file.ToList()
@@ -183,7 +183,7 @@ namespace TEngine
                     break;
                 case BundleType.All:
                     filePaths = GetSubFile(bundlePath,rules).ToList();
-                    bundleDic.Add(bundlePath, new DefineData()
+                    bundleDic.Add(bundlePath, new BuildDataDefine()
                     {
                         ABName = bundlePath,
                         //把自己添加进去
