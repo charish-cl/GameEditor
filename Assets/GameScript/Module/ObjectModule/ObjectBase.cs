@@ -1,65 +1,29 @@
-﻿using System;
-
-namespace TEngine
+﻿namespace TEngine
 {
-    public abstract class ObjectBase
+    /// <summary>
+    /// 如果直接继承ObjectBase，并把IsInUse，ReferenceCnt写到ObjectBase里，会出现能直接访问到这两个变量的情况，
+    /// 所以要通过中间层
+    /// </summary>
+    public class ObjectBase
     {
-        private string name;
-
-        private int priority;
-
         /// <summary>
-        /// 是否锁定
+        /// 名称
         /// </summary>
-        private bool _Lock;
+        public string Name;
 
 
-        private object target;
-        
-        
-        private DateTime lastUseTime;
-
-        public string Name
+        public object target;
+        public virtual void OnSpawn()
         {
-            get => name;
-            set => name = value;
+            
         }
-
-        public int Priority
+        public virtual void OnUnspawn()
         {
-            get => priority;
-            set => priority = value;
+            
         }
-
-        public bool Lock
+        public virtual void OnRelease()
         {
-            get => _Lock;
-            set => _Lock = value;
+            
         }
-
-        public object Target
-        {
-            get => target;
-            set => target = value;
-        }
-
-        public DateTime LastUseTime
-        {
-            get => lastUseTime;
-            set => lastUseTime = value;
-        }
-
-        /// <summary>
-        /// 是否可以释放
-        /// </summary>
-        public virtual bool CanReleaseFlag => true;
-
-        /// 生成，回收，释放
-        public virtual void OnSpawn(){}
-        public virtual void OnUnSpawn(){}
-        public abstract void OnRelease();
-
-
-
     }
 }

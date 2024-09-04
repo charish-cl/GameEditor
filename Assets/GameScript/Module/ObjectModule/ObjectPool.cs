@@ -1,110 +1,132 @@
-﻿using System;
+﻿
+using System.Collections.Generic;
 
 namespace TEngine
 {
-    public class ObjectPool<T> :IObjectPool<T> where T : ObjectBase
+    public class ObjectPool<T>:ObjectPoolBase where T : ObjectBase
     {
+        /// <summary>
+        /// 允许多次获取吗
+        /// </summary>
+        public bool allowMultiSpawn = true;
         
-        public string Name { get; }
-        public string FullName { get; }
-        public Type ObjectType { get; }
-        public int Count { get; }
-        public int CanReleaseCount { get; }
-        public bool AllowMultiSpawn { get; }
-        public float AutoReleaseInterval { get; set; }
-        public int Capacity { get; set; }
-        public float ExpireTime { get; set; }
-        public int Priority { get; set; }
+        public int capacity = 10;
         
+        public float releaseInterval = 10;
+        
+        public float Timer { get; set; } = 0;
         
         public GameFrameworkMultiDictionary<string, Object<T>> mPool = new GameFrameworkMultiDictionary<string, Object<T>>();
-        
-        public void Init()
+        /// <summary>
+        /// 这个用于查找对象
+        /// </summary>
+        public Dictionary<object, Object<T>> objMap = new Dictionary<object, Object<T>>();
+
+        public ObjectPool(bool allowMultiSpawn, int capacity, float releaseInterval)
         {
-          
-        }
-        public void Update()
-        {
-            GameTime.StartFrame();
-        }
-        public void Register(T obj, bool spawned)
-        {
-            
+            this.allowMultiSpawn = allowMultiSpawn;
+            this.capacity = capacity;
+            this.releaseInterval = releaseInterval;
         }
 
-        public bool CanSpawn()
+        public void Register(T item)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool CanSpawn(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T Spawn()
-        {
-            throw new NotImplementedException();
+            var obj = new Object<T>(item);
+            mPool.Add(item.Name,obj );
+            objMap.Add(item, obj);
         }
 
         public T Spawn(string name)
         {
-            throw new NotImplementedException();
+          
+            Object<T> item = null;
+            if (mPool.TryGetValue(name, out var list))
+            {
+                foreach (var o in list)
+                {
+                    if (allowMultiSpawn)
+                    {
+                        item = o;
+                    }
+                    else if (o.ReferenceCnt <= 0)
+                    {
+                        item = o;
+                    }
+                }
+            }
+            else
+            {
+                return null;
+            }
+            
+            item.ReferenceCnt++;
+          
+            item.OnSpawn();
+            
+            return item.m_Object;
         }
 
-        public void Unspawn(T obj)
+        protected Object<T> GetObject(object obj)
         {
-            throw new NotImplementedException();
+            if (objMap.TryGetValue(obj, out var item))
+            {
+                return item;
+            }
+            
+            return null;
+        }
+        public void UnSpawn(T item)
+        {
+            var obj = GetObject(item);
+            obj.OnUnspawn();
+            obj.ReferenceCnt--;
         }
 
-        public void Unspawn(object target)
+    
+
+        protected bool Release(T item)
         {
-            throw new NotImplementedException();
+            var obj=GetObject(item);
+
+            if (obj.IsInUse||obj.IsLock)
+            {
+                return false;
+            }
+            
+            obj.OnRelease();
+
+            //从两个地方删除
+            mPool.Remove(item.Name, obj);
+            objMap.Remove(item);
+            
+            return true;
         }
 
-        public void SetLocked(T obj, bool locked)
+        private void ReleaseUnUseObject()
         {
-            throw new NotImplementedException();
+            foreach (var (key, value) in objMap)
+            {
+                if (value.ReferenceCnt <= 0)
+                {
+                    Release(value.m_Object);
+                }
+            }
         }
-
-        public void SetLocked(object target, bool locked)
+        void Update(float deltaTime)
         {
-            throw new NotImplementedException();
+            Timer += deltaTime;
+
+
+            if (Timer >= releaseInterval)
+            {
+                Timer = 0;
+                
+                ReleaseUnUseObject();
+            }
         }
-
-        public void SetPriority(T obj, int priority)
+        public override void Update(float elapseSeconds, float realElapseSeconds)
         {
-            throw new NotImplementedException();
-        }
-
-        public void SetPriority(object target, int priority)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ReleaseObject(T obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ReleaseObject(object target)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Release()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Release(int toReleaseCount)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ReleaseAllUnused()
-        {
-            throw new NotImplementedException();
+            Update(elapseSeconds);
         }
     }
 }

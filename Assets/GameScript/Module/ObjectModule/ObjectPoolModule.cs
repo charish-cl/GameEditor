@@ -1,20 +1,31 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace TEngine
 {
     public class ObjectPoolModule:Module
     {
-      
-    }
-
-
-    public abstract class ObjectPoolImp : ModuleImp
-    {
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        private IObjectPoolManager _objectPoolManager;
+        
+        protected override void Awake()
         {
-            base.Update(elapseSeconds, realElapseSeconds);
-            
-            //轮询所有对象池，回收对象池中的对象
+            base.Awake();
+
+            _objectPoolManager = ModuleImpSystem.GetModule<IObjectPoolManager>();
+            if (_objectPoolManager == null)
+            {
+                Log.Fatal("ObjectPoolManager invalid.");
+                return;
+            }
+        }
+        public ObjectPool<T> CreateObjectPool<T>(bool allowMultiSpawn, int capacity, float releaseInterval) where T : ObjectBase
+        {
+            return _objectPoolManager.CreateObjectPool<T>(allowMultiSpawn, capacity, releaseInterval);
+        }
+        
+        public ObjectPool<T> CreateObjectPool<T>() where T : ObjectBase
+        {
+            return _objectPoolManager.CreateObjectPool<T>(true, 10, 10);
         }
     }
+    
 }
