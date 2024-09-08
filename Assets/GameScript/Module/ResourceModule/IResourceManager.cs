@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace TEngine
 {
     public interface IResourceManager
     {  
         
-        public AssetObject LoadAsset(string assetName);
-        
-        public AssetObject LoadAssetAsync(string assetName);
-        
-        public BundleObject LoadBundle(string bundleName);
-        
-        public BundleObject LoadBundleAsync(string bundleName);
-        
+        public AssetObject LoadAsset(string assetName,bool isAsync=false);
+        public BundleObject LoadBundle(string bundleName,bool isAsync=false);
         public void UnloadAsset(string assetName);
 
-        public void UnloadAsset(object asset);
-
         public void UnloadBundle(string bundleName);
-
-        public void UnloadBundle(object bundle);
         public void UnloadUnusedAssets();
+        public void Initialize(string manifestfilePath, string abPrefix, ResItemLis resourceList);
     }
 }

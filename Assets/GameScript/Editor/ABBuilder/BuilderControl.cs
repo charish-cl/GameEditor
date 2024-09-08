@@ -84,9 +84,9 @@ namespace TEngine
                     }
                     resItemDic.Add(s,new ResItem()
                     {
-                        ResName = s,
+                        ResName = s.Replace("\\", "/"),
                         ABName = abItem.ABName,
-                        DependABList = GetDependencies(s).ToList()
+                        DependList = GetDependencies(s).ToList()
                     });
                 }
             }
@@ -136,6 +136,14 @@ namespace TEngine
             }
         }
 
+        public string GetABPath(string bundleName)
+        {
+            //大写转小写
+            bundleName = bundleName.ToLower();
+            bundleName = bundleName.Replace("\\", "/");
+          
+            return bundleName;
+        }
         /// <summary>
         /// 根据路径和规则加载资源
         /// </summary>
@@ -157,7 +165,7 @@ namespace TEngine
                     {
                         bundleDic.Add(filePath, new BuildDataDefine()
                         {
-                            ABName = filePath,
+                            ABName = GetABPath(filePath),
                             //把自己添加进去
                             AssetList = new List<string> {filePath}
                         });
@@ -176,7 +184,7 @@ namespace TEngine
                         }
                         bundleDic.Add(folder, new BuildDataDefine()
                         {
-                            ABName = folder,
+                            ABName = GetABPath(folder),
                             AssetList = file.ToList()
                         });
                     }
@@ -185,7 +193,7 @@ namespace TEngine
                     filePaths = GetSubFile(bundlePath,rules).ToList();
                     bundleDic.Add(bundlePath, new BuildDataDefine()
                     {
-                        ABName = bundlePath,
+                        ABName = GetABPath(bundlePath),
                         //把自己添加进去
                         AssetList = filePaths
                     });

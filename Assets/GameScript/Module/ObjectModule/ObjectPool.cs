@@ -29,9 +29,9 @@ namespace TEngine
             this.releaseInterval = releaseInterval;
         }
 
-        public void Register(T item)
+        public void Register(T item,bool isLock)
         {
-            var obj = new Object<T>(item);
+            var obj = new Object<T>(item,isLock);
             mPool.Add(item.Name,obj );
             objMap.Add(item, obj);
         }

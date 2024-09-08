@@ -14,5 +14,6 @@ namespace GameDevKit.Utility
         {
             return new Vector2(vector3.x, vector3.y);
         }
+        
     }
 }

@@ -1,35 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace TEngine
 {
+    [DisallowMultipleComponent]
     public class ResourceModule: Module
     {
-        private string RESOURCE_ASSET_NAME="Bundle";
-        private string BUNDLE_ASSET_NAME="Resource";
+        private string RESOURCE_ASSET_NAME="Resource";
+        private string BUNDLE_ASSET_NAME="Bundle";
         private string PrefixPath { get; set; }
         private string Platform { get; set; }
 
+        [LabelText("是否是编辑器模式")]
+        public bool IsEditor;
+        
         private void Start()
         {
-            PrefixPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../../AssetBundle")).Replace("\\", "/");
-            PrefixPath += $"/{Platform}";
+            // PrefixPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../../AssetBundle")).Replace("\\", "/");
+            // PrefixPath += $"/{Platform}";
+            PrefixPath = "Assets/Game/Config";
+            LoadConfig();
         }
 
-        public void LoadConfig()
+        public IResourceManager ResourceManager { get; private set; }
+        
+        
+        public async void LoadConfig()
         {
-            string manifestBunldeFile="Assets/AssetBundles/manifest.assetbundle";
-            AssetBundle manifestAssetBundle = AssetBundle.LoadFromFile(manifestBunldeFile, 0, 0);
+            //编辑器模式下，直接加载资源
+            if (IsEditor)
+            {
+                ResourceManager = new EditorResourceManager();
+                ResourceManager.Initialize(null, null, null);
+                Debug.Log("编辑器模式资源模块初始化成功！");
+                return;
+            }
+            string manifestBunldeFile=Path.GetFullPath(Path.Combine(Application.dataPath, "../Build/Build")).Replace("\\", "/");
 
-            //想了下感觉也没要
-            // TextAsset textAsset = manifestAssetBundle.LoadAsset<TextAsset>("AssetBundleManifest");
-            // TextAsset resourceTextAsset = manifestAssetBundle.LoadAsset(RESOURCE_ASSET_NAME) as TextAsset;
-            // TextAsset bundleTextAsset = manifestAssetBundle.LoadAsset(BUNDLE_ASSET_NAME) as TextAsset;
+            ResourceManager = ModuleImpSystem.GetModule<IResourceManager>();
             
-            //
-            // resourceTextAsset.text
+            string resItemLisPath = Path.Combine(PrefixPath, $"{RESOURCE_ASSET_NAME}.json");
+            
+            var resItemLis = JsonUtility.FromJson<ResItemLis>(File.ReadAllText(resItemLisPath));
+
+            if (resItemLis == null)
+            {
+                Debug.LogError($"资源配置文件不存在 {resItemLisPath}");
+                return;
+            }
+            string abPrefix = Path.GetFullPath(Path.Combine(Application.dataPath, "../Build")).Replace("\\", "/");
+            ResourceManager.Initialize(manifestBunldeFile, abPrefix,resItemLis);
+         
+            
+            Debug.Log($"资源模块初始化成功！ {resItemLis.mResList.Count} 个资源 ");
+        }
+
+        public T LoadAsset<T>(string assetUrl) where T : UnityEngine.Object
+        {
+            var asset = ResourceManager.LoadAsset(assetUrl);
+            if (asset == null)
+            {
+                Debug.LogError($"资源加载失败 {assetUrl}");
+                return null;
+            }
+            Debug.Log($"资源加载成功 {asset.target.GetType()} {asset.target}");
+            return (T)asset.target;
+        }
+
+        public async UniTask<T> LoadAssetAsync<T>(string assetUrl) where T : UnityEngine.Object
+        {
+            var assetObject = ResourceManager.LoadAsset(assetUrl, true);
+            var assetObjectAwaiter = await assetObject.awaiter;
+            
+            var asset = (T)assetObject.target;
+            Debug.Log($"资源加载成功 {asset.GetType()} {asset}");
+
+            return asset;
         }
         private string GetFileUrl(string assetUrl)
         {

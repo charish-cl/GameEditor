@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 3079908828
+CRC: 4130442044
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -13,4 +13,10 @@ AssetBundleManifest:
       Dependencies: {}
     Info_3:
       Name: assets/game/uiform/image.prefab
+      Dependencies: {}
+    Info_4:
+      Name: assets/game/prefab/image.prefab
+      Dependencies: {}
+    Info_5:
+      Name: assets/game/prefab/panel.prefab
       Dependencies: {}

@@ -15,11 +15,12 @@
         public int ReferenceCnt;
 
         public bool IsLock;
-        public Object(T item)
+        public Object(T item, bool isLock = false)
         {
             m_Object = item;
             IsInUse = false;
             ReferenceCnt = 0;
+            IsLock = isLock;
         }
 
 

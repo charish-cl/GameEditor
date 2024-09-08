@@ -6,6 +6,9 @@ using Object = UnityEngine.Object;
 
 namespace GameDevKit
 {
+    /// <summary>
+    /// 这个是参考在深渊项目里的思路吧，一个配置父类，搭配一堆子文件
+    /// </summary>
     public abstract class BaseDataBase:SerializedScriptableObject
     {
     }

@@ -65,10 +65,10 @@ namespace GameDevKit
         /// </summary>
         /// <param name="t2d"></param>
         /// <returns></returns>
-        public static Sprite[] GetTextureSprite(this Texture2D t2d)
-        {
-           return ResourcesKit.ResLoadAll<Sprite>(t2d.GetResourcesPath());
-        }
+        // public static Sprite[] GetTextureSprite(this Texture2D t2d)
+        // {
+        //    return ResourcesKit.ResLoadAll<Sprite>(t2d.GetResourcesPath());
+        // }
         
         public static Sprite Texture2dToSprite(this Texture2D t2d)
         {

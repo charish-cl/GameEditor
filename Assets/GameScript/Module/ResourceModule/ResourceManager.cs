@@ -4,52 +4,65 @@ using UnityEngine;
 
 namespace TEngine
 {
+    [UpdateModule]
+    //TODO:避免加载重复资源问题
     public class ResourceManager:ModuleImp,IResourceManager
     {
-           // public void LoadAsset(string assetName, System.Action<ObjectBase> callback)
-        // {
-        // File.ReadAllText("Assets/GameScript/Module/ResourceModule/ResourceModule.cs");
-        //     //TODO: load asset from assetbundle
-        //     // ObjectBase asset = AssetDatabase.LoadAssetAtPath(assetName, typeof(ObjectBase));
-        //     // callback(asset);
-        // }
-
-        public HashSet<string> m_LoadingAsset;
+        
+        #region 初始化相关
+        
+        //需要初始化的资源
+        Dictionary<string, List<string>> ResourceDependencyDic = new Dictionary<string, List<string>>();
+        //资源对应的bundle
+        Dictionary<string, string> AssetBundleDic = new Dictionary<string, string>();
+        // bundle依赖管理信息
+        AssetBundleManifest m_AssetBundleManifest;
+        #endregion
+        
+        //已经加载的资源
         public Dictionary<string, AssetObject> m_AssetDict;
         public Dictionary<string, BundleObject> m_BundleDict;
         
-        //资源依赖
-        Dictionary<string, List<string>> ResourceDependencyDic = new Dictionary<string, List<string>>();
         
+        
+        //资源池
         public ObjectPool<AssetObject> m_AssetPool;
-        public ObjectPool<BundleObject> m_ResourcePool;
+        public ObjectPool<BundleObject> m_BundlePool;
 
 
+        
+        /// <summary>
+        /// 需要卸载的资源
+        /// </summary>
         public List<BundleObject> m_UnloadBundleList;
         public List<AssetObject> m_UnloadAssetList;
         
-        /// <summary>
-        /// bundle依赖管理信息
-        /// </summary>
-        AssetBundleManifest m_AssetBundleManifest;
-
-        string manifestfilePath;
+        
+        
+        public List<BundleObject> m_LoadingBundle;
+        public List<AssetObject> m_LoadingAsset;
 
         public void Init( ) 
         {
-            m_LoadingAsset = new HashSet<string>();
+            m_LoadingAsset = new List<AssetObject>();
+            m_LoadingBundle = new List<BundleObject>();
             m_AssetDict = new Dictionary<string, AssetObject>();
+            m_BundleDict = new Dictionary<string, BundleObject>();
             
             m_UnloadBundleList = new List<BundleObject>();
             m_UnloadAssetList = new List<AssetObject>();
             
-            var poolModule = GameModule.Get<ObjectPoolModule>();
+            var poolModule = Game.Get<ObjectPoolModule>();
             m_AssetPool = poolModule.CreateObjectPool<AssetObject>();
-            m_ResourcePool = poolModule.CreateObjectPool<BundleObject>();
+            m_BundlePool = poolModule.CreateObjectPool<BundleObject>();
         }
 
-        public void Initialize()
+        public string Prefix ;
+        public void Initialize(string manifestfilePath,string abPrefix,ResItemLis resourceList)
         {
+            Init();
+            Prefix =abPrefix;
+            
             AssetBundle manifestAssetBundle = AssetBundle.LoadFromFile(manifestfilePath);
             UnityEngine.Object[] objs = manifestAssetBundle.LoadAllAssets();
 
@@ -59,97 +72,160 @@ namespace TEngine
             }
 
             m_AssetBundleManifest = objs[0] as AssetBundleManifest;
+            
+            //填充初始化数据
+            foreach (var item in resourceList.mResList)
+            {
+                //填充资源依赖信息
+                if (item.DependList.Count > 0)
+                {
+                    ResourceDependencyDic.Add(item.ResName, item.DependList);
+                }
+                //所属的bundle
+                if (!AssetBundleDic.ContainsKey(item.ResName))
+                {
+                    AssetBundleDic.Add(item.ResName, item.ABName);
+                }
+            }
+            
         }
-
-        public AssetObject LoadAsset(string assetName, Action<AssetObject> callback)
+        
+        //同步和异步只是实际加载的方式不同，加载流程是一样的
+        public AssetObject LoadAsset(string assetName,bool isAsync = false)
         {
+            //处理bundle ---> 加载依赖 ---> 加载资源
+            
             //看看池子里面有没有这个资源
-            AssetObject assetObj = null;
             if (m_AssetDict.ContainsKey(assetName))
             {
-                assetObj =  m_AssetPool.Spawn(assetName);
-                callback(assetObj);
-                return assetObj;
+                return m_AssetPool.Spawn(assetName);
             }
-
-            //如果没有，看看有没有正在加载
-            if (m_LoadingAsset.Contains(assetName))
+            //先加载依赖
+            BundleObject bundleObject=null;
+            if (AssetBundleDic.ContainsKey(assetName))
             {
-                //如果正在加载，就等待回调
-                return null;
+                var bundleName = AssetBundleDic[assetName];
+                bundleObject = LoadBundle(bundleName,isAsync);
+                Debug.Log($"Load bundle {bundleName} for {assetName}");
             }
-
-            //如果没有正在加载，就开始加载
-
-            return null;
+            else
+            {
+                throw new Exception($"Can not find bundle for {assetName}");
+            }
+            
+            List<AssetObject> dependencies = null;
+            if (ResourceDependencyDic.ContainsKey(assetName))
+            {
+                dependencies = new List<AssetObject>();
+                
+                var resourceDependencies = ResourceDependencyDic[assetName];
+                
+                foreach (var deppendenc in resourceDependencies)
+                {
+                    var depAsset = LoadAsset(deppendenc,isAsync);
+                    dependencies.Add(depAsset);
+                }
+            }
+            //加载资源
+            var assetObj = new AssetObject(assetName,bundleObject,dependencies);
+            m_AssetDict.Add(assetName, assetObj);
+            
+            if (isAsync)
+            {
+                m_LoadingAsset.Add(assetObj);
+                assetObj.awaiter = new LoadAssetAwaiter();
+            }
+            else
+            {
+                assetObj.LoadAsset();
+            }
+            m_AssetPool.Register(assetObj,true);
+            return assetObj;
         }
-
-        public AssetObject LoadAsset(string assetName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public AssetObject LoadAssetAsync(string assetName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public BundleObject LoadBundle(string bundleName)
+        
+        public BundleObject LoadBundle(string bundleName,bool isAsync = false)
         {
             //看看池子里面有没有这个资源
             if (m_BundleDict.TryGetValue(bundleName,out var bundleObj))
             {
-                return m_ResourcePool.Spawn(bundleName); 
+                return m_BundlePool.Spawn(bundleName); 
             }
-            //如果没有，看看有没有正在加载
-            if (m_LoadingAsset.Contains(bundleName))
-            {
-
-            }
-
-            var dependencies = m_AssetBundleManifest.GetDirectDependencies(bundleName);
-            
-            
-            var bundleObject = new BundleObject();
            
-            return null;
-        }
+            List<BundleObject> bundleDependencies =null;
+            var dependencies = m_AssetBundleManifest.GetDirectDependencies(bundleName);
 
-        public BundleObject LoadBundleAsync(string bundleName)
-        {
-            throw new NotImplementedException();
+            if (dependencies.Length > 0)
+            {
+                bundleDependencies = new List<BundleObject>();
+                foreach (var dependency in dependencies)
+                {
+                    var depBundle = LoadBundle(dependency);
+                    bundleDependencies.Add(depBundle);
+                }
+            }
+            var bundleObject = new BundleObject(bundleName, bundleDependencies);
+            m_BundleDict.Add(bundleName, bundleObject);
+            
+            //加载bundle,加上前缀
+            string bundlePath = $"{Prefix}/{bundleName}";
+            bundleObject.BundlePath = bundlePath;
+            if (isAsync)
+            {
+                m_LoadingBundle.Add(bundleObject);
+            }
+            else
+            {
+                bundleObject.LoadBundle();
+            }
+            
+            m_BundlePool.Register(bundleObject,true);
+            return bundleObject;
         }
+        
 
         public void UnloadAsset(string assetName)
         {
-            
+            m_UnloadAssetList.Add(m_AssetDict[assetName]);
         }
-
-        public void UnloadAsset(object asset)
-        {
-            m_UnloadAssetList.Add(asset as AssetObject);
-        }
-
+        
         public void UnloadBundle(string bundleName)
         {
-            
+            m_UnloadBundleList.Add(m_BundleDict[bundleName]);
         }
-
-        public void UnloadBundle(object bundle)
-        {
-            m_UnloadBundleList.Add(bundle as BundleObject);
-        }
-
+        
         public void UnloadUnusedAssets()
         {
-            throw new NotImplementedException();
+          
         }
 
         internal override void Update(float elapseSeconds, float realElapseSeconds)
         {
             base.Update(elapseSeconds, realElapseSeconds);
-
-
+            if (m_LoadingBundle.Count > 0)
+            {
+                for (int i = m_LoadingBundle.Count - 1; i >= 0; i--)
+                {
+                    var bundle = m_LoadingBundle[i];
+                    if (bundle.Update())
+                    {
+                        m_LoadingBundle.RemoveAt(i);
+                    }
+                }
+            }
+            
+            if (m_LoadingAsset.Count > 0)
+            {
+                for (int i = m_LoadingAsset.Count - 1; i >= 0; i--)
+                {
+                    var asset = m_LoadingAsset[i];
+                    if (asset.Update())
+                    {
+                        m_LoadingAsset.RemoveAt(i);
+                    }
+                }
+            }
+            
+            
             if (m_UnloadAssetList.Count > 0)
             {
                 foreach (var asset in m_UnloadAssetList)
@@ -169,12 +245,12 @@ namespace TEngine
 
                 foreach (var bundle in m_UnloadBundleList)
                 {
-                    m_ResourcePool.UnSpawn(bundle);
+                    m_BundlePool.UnSpawn(bundle);
                     //依赖也要卸载
 
                     foreach (var asset in bundle.Dependencies)
                     {
-                        m_ResourcePool.UnSpawn(asset);
+                        m_BundlePool.UnSpawn(asset);
                     }
                 }
             }

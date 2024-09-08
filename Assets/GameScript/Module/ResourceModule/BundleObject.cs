@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace TEngine
 {
@@ -7,50 +9,74 @@ namespace TEngine
     {
         public AssetBundle bundle;
         
-        public List<BundleObject> Dependencies = new List<BundleObject>();
+        public List<BundleObject> Dependencies;
         
-        AssetBundleRequest request;
+        //异步加载ab的request
+        AssetBundleCreateRequest request;
         
-        public bool IsLoadDone;
+        public bool IsDone;
         
-        public void LoadBundle(string bundleName)
+        public BundleObject(string bundleName,List<BundleObject> dependencies)
         {
-            bundle = AssetBundle.LoadFromFile(bundleName);
+            this.Dependencies = dependencies;
+            this.Name = bundleName;
+            this.IsDone = false;
         }
+
+
+        public string BundlePath;
+        private void LoadBundleAsync()
+        {
+            request = AssetBundle.LoadFromFileAsync(BundlePath);
+        }
+        public void LoadBundle()
+        {
+            bundle = AssetBundle.LoadFromFile(BundlePath);
+        }
+        
         
         public Object LoadAsset<T>(string AssetName) where T : Object
         {
             var asset = bundle.LoadAsset<T>(AssetName);
             return asset;
         }
-        
-       
-        public void LoadAssetAsync<T>(string AssetName) where T : Object
+        public AssetBundleRequest LoadAssetAsync(string assetName, Type type)
         {
-             request = bundle.LoadAssetAsync<T>(AssetName);
+            return bundle.LoadAssetAsync(assetName, type);
         }
-
 
         public bool Update()
         {
-            if (IsLoadDone)
+            if (IsDone)
             {
                 return true;
             }
+
+            if (request == null)
+            {
+                LoadBundleAsync();
+                return false;
+            }
             
-            if (request.isDone)
+            if (!request.isDone)
+            {
+                return false;
+            }
+            if (Dependencies!= null && Dependencies.Count > 0)
             {
                 for (int i = 0; i < Dependencies.Count; i++)
                 {
-                    if (!Dependencies[i].IsLoadDone)
+                    if (!Dependencies[i].IsDone)
                     {
                         return false;
                     }
                 }
             }
-
-            IsLoadDone = true;
             
+            bundle = request.assetBundle;
+            
+            request = null;
+            IsDone = true;
             return true;
         }
         
@@ -58,5 +84,7 @@ namespace TEngine
         {
             bundle.Unload(true);
         }
+
+     
     }
 }

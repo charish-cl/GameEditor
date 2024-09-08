@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace TEngine
 {
@@ -21,7 +22,7 @@ namespace TEngine
         /// </summary>
         public string ABName;
 
-        public List<string> DependABList;
+       public List<string> DependList;
     }
 //TODO: 这里的ABItemLis和ResItemLis是用来保存到配置里的，可以有更好的方法的暂时这样吧
 //主要JsonUtility.SerializeObject(ABItemLis)和JsonUtility.SerializeObject(ResItemLis)

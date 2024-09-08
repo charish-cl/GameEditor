@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BuilderSetting
   m_EditorClassIdentifier: 
   serializationData:
-    SerializedFormat: 2
+    SerializedFormat: 0
     SerializedBytes: 
     ReferencedUnityObjects: []
     SerializedBytesString: 
@@ -26,4 +26,9 @@ MonoBehaviour:
     resourceType: 0
     bundleType: 0
     bundlePath: Assets/Game/UIForm
+    rules: 
+  - bundleName: Prefab
+    resourceType: 0
+    bundleType: 0
+    bundlePath: Assets/Game/Prefab
     rules: 
